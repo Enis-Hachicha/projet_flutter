@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:testapp/widgets/drawer_widget.dart';
 
+import '../dataBase/dataBase.dart';
+
 class Journal extends StatefulWidget {
   const Journal({Key? key}): super(key: key);
 
@@ -11,8 +13,17 @@ class Journal extends StatefulWidget {
 class _JournalState extends State<Journal> {
   List todoList = [];
   String singlevalue = "";
+  final DatabaseHelper _db = DatabaseHelper.instance;
+  List<Map<String, dynamic>> _Journal= [];
+
 
   final textcontroller = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    populateJournal();
+  }
 
   addString(content) {
     setState(() {
@@ -20,19 +31,23 @@ class _JournalState extends State<Journal> {
     });
   }
 
-  addList() {
+  Future<void> populateJournal() async{
+    final journalItems = await _db.getAllJournalItems();
     setState(() {
-      todoList.add({"value": singlevalue});
-      singlevalue= "";
+      _Journal = journalItems;
     });
   }
 
-  deleteItem(index) {
-    setState(() {
-      todoList.removeAt(index);
-    });
+  Future<void> _addItem(String journalItemName) async {
+    if (journalItemName.isNotEmpty) {
+      await _db.insertJournalItem(journalItemName);
+      populateJournal();
+    }
   }
-
+  Future<void> _deleteItem(int id) async {
+    await _db.deleteJournalItem(id);
+    populateJournal();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,7 +73,7 @@ class _JournalState extends State<Journal> {
             Expanded(
               flex: 90,
               child: ListView.builder(
-                  itemCount: todoList.length,
+                  itemCount: _Journal.length,
                   itemBuilder: (context, index) {
                     return Card(
                       shape: RoundedRectangleBorder(
@@ -77,7 +92,7 @@ class _JournalState extends State<Journal> {
                               Expanded(
                                 flex: 80,
                                 child: Text(
-                                  todoList[index]['value'].toString(),
+                                  _Journal[index]['name'],
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold,
@@ -91,7 +106,7 @@ class _JournalState extends State<Journal> {
                                     backgroundColor: Colors.white,
                                     child: TextButton(
                                       onPressed: () {
-                                        deleteItem(index);
+                                        _deleteItem(_Journal[index]['id']);
                                       },
                                       child: Icon(
                                         Icons.delete,
@@ -142,7 +157,7 @@ class _JournalState extends State<Journal> {
                         flex: 27,
                         child: ElevatedButton(
                           onPressed: () {
-                            addList();
+                            _addItem(textcontroller.text);
                             textcontroller.clear();
                           },
                           child: Container(

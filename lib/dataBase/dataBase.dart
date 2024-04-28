@@ -35,8 +35,10 @@ class DatabaseHelper {
 
   Future _createDb(Database db, int version) async {
     await db.execute(
-      'CREATE TABLE $journalitemsTable ($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colName TEXT NOT NULL, $colIsFinished INTEGER NOT NULL),'
-      'CREATE TABLE $taskitemsTable ($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colName TEXT NOT NULL, $colIsFinished INTEGER NOT NULL)'
+      'CREATE TABLE $journalitemsTable ($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colName TEXT NOT NULL)'
+    );
+    await db.execute(
+        'CREATE TABLE $taskitemsTable ($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colName TEXT NOT NULL)'
     );
   }
 
@@ -56,10 +58,10 @@ class DatabaseHelper {
     return await db!.delete(journalitemsTable, where: '$colId = ?', whereArgs: [id]);
   }
 
-  Future<List<String>> getAllJournalItems() async {
+  Future<List<Map<String, dynamic>>> getAllJournalItems() async {
     final db = await instance.db;
     final maps = await db!.query(journalitemsTable);
-    return maps.isNotEmpty ? maps.map((map) => map.toString()).toList() : [];
+    return maps.isNotEmpty ? maps.map((map) => map).toList() : [];
   }
   Future<int> insertTaskItem(String taskItem) async {
     final db = await instance.db;
