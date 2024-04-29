@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:testapp/widgets/drawer_widget.dart';
 
+import '../dataBase/dataBase.dart';
+
 class Tasks extends StatefulWidget {
   const Tasks({Key? key}): super(key: key);
 
@@ -11,6 +13,16 @@ class Tasks extends StatefulWidget {
 class _TasksState extends State<Tasks> {
   List todoList = [];
   String singlevalue = "";
+  final DatabaseHelper _db = DatabaseHelper.instance;
+  List<Map<String, dynamic>> _Task=[];
+
+  final textcontroller = TextEditingController();
+
+  @override
+  void initState(){
+    super.initState();
+    populateTask();
+  }
 
   addString(content) {
     setState(() {
@@ -18,18 +30,24 @@ class _TasksState extends State<Tasks> {
     });
   }
 
-  addList() {
+  Future<void> populateTask() async{
+    final taskItems = await _db.getAllTaskItems();
     setState(() {
-      todoList.add({"value": singlevalue});
+      _Task = taskItems;
     });
   }
 
-  deleteItem(index) {
-    setState(() {
-      todoList.removeAt(index);
-    });
+  Future<void> _addItem(String taskItemName) async {
+    if (taskItemName.isNotEmpty){
+      await _db.insertTaskItem(taskItemName);
+      populateTask();
+    }
   }
 
+  Future<void> _deleteItem(int id) async{
+    await _db.deleteTaskItem(id);
+    populateTask();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,13 +72,13 @@ class _TasksState extends State<Tasks> {
             Expanded(
               flex: 90,
               child: ListView.builder(
-                  itemCount: todoList.length,
+                  itemCount: _Task.length,
                   itemBuilder: (context, index) {
                     return Card(
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15),
                       ),
-                      color: Colors.blue[900],
+                      color: Colors.blue[300],
                       child: SizedBox(
                         height: 50,
                         width: double.infinity,
@@ -73,7 +91,7 @@ class _TasksState extends State<Tasks> {
                               Expanded(
                                 flex: 80,
                                 child: Text(
-                                  todoList[index]['value'].toString(),
+                                  _Task[index]['name'],
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold,
@@ -87,7 +105,7 @@ class _TasksState extends State<Tasks> {
                                     backgroundColor: Colors.white,
                                     child: TextButton(
                                       onPressed: () {
-                                        deleteItem(index);
+                                        _deleteItem(_Task[index]['id']);
                                       },
                                       child: Icon(
                                         Icons.delete,
@@ -111,6 +129,7 @@ class _TasksState extends State<Tasks> {
                       child: Container(
                         height: 40,
                         child: TextFormField(
+                          controller: textcontroller,
                           onChanged: (content) {
                             addString(content);
                           },
@@ -120,7 +139,7 @@ class _TasksState extends State<Tasks> {
                               ),
                               fillColor: Colors.blue[300],
                               filled: true,
-                              labelText: 'Create Task....',
+                              labelText: 'Add a Task....',
                               labelStyle: TextStyle(
                                 color: Colors.indigo[900],
                                 fontWeight: FontWeight.bold,
@@ -134,13 +153,14 @@ class _TasksState extends State<Tasks> {
                           width: 5,
                         )),
                     Expanded(
-                        flex: 27,
+                        flex: 25,
                         child: ElevatedButton(
                           onPressed: () {
-                            addList();
+                            _addItem(textcontroller.text);
+                            textcontroller.clear();
                           },
                           child: Container(
-                              height: 15,
+                              height: 25,
                               width: double.infinity,
                               alignment: Alignment.center,
                               child: Text("Add")),

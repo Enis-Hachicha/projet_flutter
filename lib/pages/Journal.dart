@@ -79,7 +79,7 @@ class _JournalState extends State<Journal> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15),
                       ),
-                      color: Colors.blue[900],
+                      color: Colors.blue[300],
                       child: SizedBox(
                         height: 50,
                         width: double.infinity,
@@ -100,7 +100,7 @@ class _JournalState extends State<Journal> {
                                 ),
                               ),
                               Expanded(
-                                  flex: 20,
+                                  flex: 30,
                                   child: CircleAvatar(
                                     radius: 30,
                                     backgroundColor: Colors.white,
@@ -138,11 +138,11 @@ class _JournalState extends State<Journal> {
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(15),
                               ),
-                              fillColor: Colors.blue[300],
+                              fillColor: Colors.tealAccent,
                               filled: true,
                               labelText: 'Add to your journal....',
                               labelStyle: TextStyle(
-                                color: Colors.indigo[900],
+                                color: Colors.black,
                                 fontWeight: FontWeight.bold,
                               )),
                         ),
@@ -154,14 +154,14 @@ class _JournalState extends State<Journal> {
                           width: 5,
                         )),
                     Expanded(
-                        flex: 27,
+                        flex: 25,
                         child: ElevatedButton(
                           onPressed: () {
                             _addItem(textcontroller.text);
                             textcontroller.clear();
                           },
                           child: Container(
-                              height: 15,
+                              height: 25,
                               width: double.infinity,
                               alignment: Alignment.center,
                               child: Text("Add")),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:testapp/pages/homePage.dart';
 import 'package:testapp/pages/Tasks.dart';
 import 'package:testapp/pages/Journal.dart';
+import 'package:testapp/pages/loginPage.dart';
 
 void main() {
   runApp(testapp());
@@ -14,6 +15,9 @@ class testapp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       routes: {
+        "/login": (context){
+        return LoginPage();
+        },
         "/home": (context){
           return HomePage();
         },
@@ -26,7 +30,7 @@ class testapp extends StatelessWidget {
       },
       debugShowCheckedModeBanner: false,
       theme: ThemeData(primarySwatch: Colors.indigo),
-      initialRoute: "/home",
+      initialRoute: "/login",
     );
   }
 }

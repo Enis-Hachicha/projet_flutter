@@ -24,7 +24,7 @@ class DatabaseHelper {
 
   Future<Database> _initDb() async {
     final databasePath = await getDatabasesPath();
-    final path = join(databasePath, 'shopping_list.db');
+    final path = join(databasePath, 'testApp.db');
 
     return await openDatabase(
       path,
@@ -34,12 +34,8 @@ class DatabaseHelper {
   }
 
   Future _createDb(Database db, int version) async {
-    await db.execute(
-      'CREATE TABLE $journalitemsTable ($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colName TEXT NOT NULL)'
-    );
-    await db.execute(
-        'CREATE TABLE $taskitemsTable ($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colName TEXT NOT NULL)'
-    );
+    await db.execute('CREATE TABLE $journalitemsTable ($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colName TEXT NOT NULL)');
+    await db.execute('CREATE TABLE $taskitemsTable ($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colName TEXT NOT NULL)');
   }
 
   Future<int> insertJournalItem(String journalItem) async {
@@ -79,10 +75,10 @@ class DatabaseHelper {
     return await db!.delete(taskitemsTable, where: '$colId = ?', whereArgs: [id]);
   }
 
-  Future<List<String>> getAllTaskItems() async {
+  Future<List<Map<String, dynamic>>> getAllTaskItems() async {
     final db = await instance.db;
     final maps = await db!.query(taskitemsTable);
-    return maps.isNotEmpty ? maps.map((map) => map.toString()).toList() : [];
+    return maps.isNotEmpty ? maps.map((map) => map).toList() : [];
   }
 
   Future close() async {

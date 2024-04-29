@@ -11,7 +11,7 @@ class HomePage extends StatelessWidget{
 
       ),
       appBar: AppBar(title: Text("Home Page"),),
-      body: Center(child: Text("This page will try to make your life easier",
+      body: Center(child: Text("Welcome Enis Hachicha",
         style: Theme.of(context).textTheme.headlineMedium,
       ),
       ),
