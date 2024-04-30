@@ -138,7 +138,7 @@ class _JournalState extends State<Journal> {
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(15),
                               ),
-                              fillColor: Colors.tealAccent,
+                              fillColor: Colors.blue[300],
                               filled: true,
                               labelText: 'Add to your journal....',
                               labelStyle: TextStyle(

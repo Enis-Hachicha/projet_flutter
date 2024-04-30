@@ -141,7 +141,7 @@ class _TasksState extends State<Tasks> {
                               filled: true,
                               labelText: 'Add a Task....',
                               labelStyle: TextStyle(
-                                color: Colors.indigo[900],
+                                color: Colors.black,
                                 fontWeight: FontWeight.bold,
                               )),
                         ),
